@@ -3,49 +3,785 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>美業成交文案生成器 v1</title>
+  <title>BeautyFlow｜美業成交文案生成器</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --bg2: #eef3ff;
+      --card: rgba(255,255,255,.82);
+      --card-strong: rgba(255,255,255,.95);
+      --text: #0f1728;
+      --text-soft: #5b6476;
+      --line: rgba(15,23,40,.08);
+      --line-strong: rgba(15,23,40,.14);
+      --primary: #5b6cff;
+      --primary-2: #8b5cf6;
+      --primary-soft: #eef0ff;
+      --success: #14b86e;
+      --danger: #ef4444;
+      --shadow: 0 20px 60px rgba(15,23,40,.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(91,108,255,.10), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(139,92,246,.11), transparent 22%),
+        linear-gradient(180deg, #fbfcff 0%, #f4f7fd 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 16px 34px rgba(91,108,255,.28);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .nav-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(16px);
+      color: var(--text-soft);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      min-height: 330px;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      right: -110px;
+      top: -90px;
+      background: radial-gradient(circle, rgba(91,108,255,.16), transparent 65%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: rgba(91,108,255,.09);
+      color: var(--primary);
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      margin-bottom: 18px;
+    }
+
+    .hero-main h2 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -.05em;
+    }
+
+    .hero-main p {
+      margin: 18px 0 0;
+      max-width: 700px;
+      color: var(--text-soft);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(91,108,255,.08);
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .hero-side h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -.02em;
+    }
+
+    .hero-side p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .small-card {
+      border-radius: 20px;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(15,23,40,.05);
+      padding: 16px 18px;
+    }
+
+    .small-card strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+
+    .small-card span {
+      display: block;
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 480px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel, .result-card, .tips-card {
+      padding: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    .tag {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #344054;
+      letter-spacing: .01em;
+    }
+
+    .field small {
+      font-size: 12px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    select, textarea, input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.92);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+    }
+
+    select:focus, textarea:focus, input:focus {
+      border-color: rgba(91,108,255,.32);
+      box-shadow: 0 0 0 4px rgba(91,108,255,.08);
+      transform: translateY(-1px);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .primary-btn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 16px 34px rgba(91,108,255,.28);
+    }
+
+    .ghost-btn {
+      background: rgba(255,255,255,.92);
+      color: #334155;
+      border: 1px solid var(--line-strong);
+    }
+
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-bottom: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #98a2b3;
+      box-shadow: 0 0 0 4px rgba(152,162,179,.12);
+    }
+
+    .status.ok .dot {
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(20,184,110,.14);
+    }
+
+    .status.error .dot {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(239,68,68,.14);
+    }
+
+    .result-surface {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+      padding: 22px;
+      min-height: 470px;
+    }
+
+    .result-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(91,108,255,.08);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .result-output {
+      min-height: 320px;
+      white-space: pre-wrap;
+      color: #1d2939;
+      font-size: 15px;
+      line-height: 1.95;
+    }
+
+    .tip-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(15,23,40,.05);
+    }
+
+    .tip-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(91,108,255,.12);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .tip strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .tip span {
+      display: block;
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text-soft);
+    }
+
+    .foot {
+      text-align: center;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-top: 20px;
+    }
+
+    code.inline {
+      padding: 3px 7px;
+      background: #f2f4f7;
+      border-radius: 8px;
+      color: #344054;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero, .workspace { grid-template-columns: 1fr; }
+      .hero-main { min-height: auto; }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 16px 14px 28px; }
+      .nav { flex-direction: column; align-items: flex-start; }
+      .hero-main, .hero-side, .panel, .result-card, .tips-card { padding: 20px; border-radius: 22px; }
+      .hero-main h2 { font-size: 34px; }
+      .actions { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<h1>美業成交文案生成器 v1</h1>
-<p>（簡化版，完整樣式請使用我剛剛給你的版本）</p>
+  <div class="container">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">B</div>
+        <div>
+          <h1>BeautyFlow</h1>
+          <p>高級 SaaS 風美業成交文案生成器</p>
+        </div>
+      </div>
+      <div class="nav-pill">GitHub Pages 前端版・之後可直接接 AI 後端</div>
+    </header>
 
-<label>服務項目：</label>
-<select id="service">
-<option>男士剪髮</option>
-<option>染髮</option>
-<option>燙髮</option>
-<option>黑人燙</option>
-</select>
+    <section class="hero">
+      <div class="glass hero-main">
+        <div class="eyebrow">For Beauty Business Conversion</div>
+        <h2>不是幫你寫一篇文。<br>是幫你更快產出一篇能推動私訊的內容。</h2>
+        <p>
+          這一版先不做花俏功能。只專注一件事：
+          根據你的服務、客群、平台與風格，生成一篇更容易建立信任、降低猶豫、推動詢問的成交型貼文。
+        </p>
+        <div class="hero-chips">
+          <div class="chip">高級 SaaS 介面</div>
+          <div class="chip">專注文案轉換</div>
+          <div class="chip">適合先跑 MVP</div>
+          <div class="chip">可直上 GitHub</div>
+        </div>
+      </div>
 
-<br><br>
+      <aside class="glass hero-side">
+        <div>
+          <h3>這版先做小，才有機會做大</h3>
+          <p>不要先做圖片、影片、多平台全包。先把「對方願不願意拿去發」這件事做出來。</p>
+        </div>
 
-<label>客群：</label>
-<select id="audience">
-<option>男生</option>
-<option>女生</option>
-<option>學生</option>
-<option>上班族</option>
-</select>
+        <div class="small-card">
+          <strong>第一個 KPI</strong>
+          <span>不是觀看、不是按讚。是發出去後，有沒有人開始問。</span>
+        </div>
+        <div class="small-card">
+          <strong>第一個測試場</strong>
+          <span>先丟給你表弟這種真實商家用，回饋最快，也最能逼出需求。</span>
+        </div>
+        <div class="small-card">
+          <strong>第一個目標</strong>
+          <span>不是做很強，是做到他今天願意直接複製、直接發。</span>
+        </div>
+      </aside>
+    </section>
 
-<br><br>
+    <section class="workspace">
+      <div class="glass panel">
+        <div class="section-head">
+          <div>
+            <h3>設定文案條件</h3>
+            <p>只保留真的影響成交的欄位。少而準，比多而亂更值錢。</p>
+          </div>
+          <div class="tag">MVP v1</div>
+        </div>
 
-<button onclick="generate()">生成貼文</button>
+        <div class="form-grid">
+          <div class="field">
+            <label for="service">服務項目</label>
+            <select id="service">
+              <option value="男士剪髮">男士剪髮</option>
+              <option value="染髮">染髮</option>
+              <option value="燙髮">燙髮</option>
+              <option value="黑人燙">黑人燙</option>
+              <option value="美甲">美甲</option>
+              <option value="美睫">美睫</option>
+              <option value="霧眉">霧眉</option>
+            </select>
+          </div>
 
-<pre id="result"></pre>
+          <div class="field">
+            <label for="audience">目標客群</label>
+            <select id="audience">
+              <option value="男生">男生</option>
+              <option value="女生">女生</option>
+              <option value="學生">學生</option>
+              <option value="上班族">上班族</option>
+              <option value="第一次嘗試的人">第一次嘗試的人</option>
+              <option value="想改變造型的人">想改變造型的人</option>
+            </select>
+          </div>
 
-<script>
-function generate(){
-  const service = document.getElementById("service").value;
-  const audience = document.getElementById("audience").value;
+          <div class="field">
+            <label for="style">內容風格</label>
+            <select id="style">
+              <option value="專業直接">專業直接</option>
+              <option value="自然親切">自然親切</option>
+              <option value="高級感">高級感</option>
+              <option value="強烈反差">強烈反差</option>
+              <option value="打臉式開頭">打臉式開頭</option>
+            </select>
+          </div>
 
-  document.getElementById("result").innerText =
-`很多${audience}做${service}都踩雷，
-不是不好看，是根本不適合。
+          <div class="field">
+            <label for="goal">這篇貼文的目標</label>
+            <select id="goal">
+              <option value="讓人私訊詢問">讓人私訊詢問</option>
+              <option value="降低客人猶豫">降低客人猶豫</option>
+              <option value="建立專業信任">建立專業信任</option>
+              <option value="推動預約">推動預約</option>
+            </select>
+          </div>
 
-如果你也在考慮，
-可以先私訊我幫你看適不適合。`;
-}
-</script>
+          <div class="field">
+            <label for="platform">投放平台</label>
+            <select id="platform">
+              <option value="Instagram">Instagram</option>
+              <option value="Facebook">Facebook</option>
+              <option value="LINE 群組">LINE 群組</option>
+              <option value="TikTok">TikTok</option>
+            </select>
+          </div>
 
+          <div class="field">
+            <label for="extra">補充資訊</label>
+            <textarea id="extra" placeholder="例如：店在內湖、目前主打新客優惠、風格偏自然有型、希望多一點預約引導。"></textarea>
+            <small>你可以填地點、優惠、客群習慣，或這次想特別強調的賣點。</small>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="generateBtn" class="primary-btn">生成成交貼文</button>
+          <button id="demoBtn" class="ghost-btn">載入示範資料</button>
+          <button id="clearBtn" class="ghost-btn">清空設定</button>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="glass result-card">
+          <div class="section-head">
+            <div>
+              <h3>生成結果</h3>
+              <p>這裡先給你一個可直接複製的版本。先求可用，再慢慢優化轉換率。</p>
+            </div>
+            <div class="tag">Output</div>
+          </div>
+
+          <div id="status" class="status">
+            <span class="dot"></span>
+            <span>等待生成。</span>
+          </div>
+
+          <div class="result-surface">
+            <div class="result-label">成交型文案草稿</div>
+            <div id="result" class="result-output">按下「生成成交貼文」後，這裡會出現結果。</div>
+          </div>
+
+          <div class="actions" style="margin-top:16px;">
+            <button id="copyBtn" class="ghost-btn">複製結果</button>
+          </div>
+        </div>
+
+        <div class="glass tips-card">
+          <div class="section-head">
+            <div>
+              <h3>測試提醒</h3>
+              <p>你不是在測這個工具漂不漂亮，你是在測它能不能讓商家更快產出能拿去發的內容。</p>
+            </div>
+            <div class="tag">Testing</div>
+          </div>
+
+          <div class="tip-list">
+            <div class="tip">
+              <div class="tip-icon">1</div>
+              <div>
+                <strong>先看對方有沒有真的用</strong>
+                <span>如果工具做得很漂亮，但對方不用，那就沒有商業價值。</span>
+              </div>
+            </div>
+            <div class="tip">
+              <div class="tip-icon">2</div>
+              <div>
+                <strong>再看他有沒有大改內容</strong>
+                <span>改很多，代表生成邏輯還不夠接近他的成交語言。</span>
+              </div>
+            </div>
+            <div class="tip">
+              <div class="tip-icon">3</div>
+              <div>
+                <strong>最後才看私訊或預約</strong>
+                <span>互動數字不是最終答案，真正值錢的是詢問與成交。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      開發模式：目前是前端示範版。正式上線時，把 <code class="inline">API_ENDPOINT</code> 換成你的後端網址即可。
+    </div>
+  </div>
+
+  <script>
+    const API_ENDPOINT = "";
+
+    const serviceEl = document.getElementById("service");
+    const audienceEl = document.getElementById("audience");
+    const styleEl = document.getElementById("style");
+    const goalEl = document.getElementById("goal");
+    const platformEl = document.getElementById("platform");
+    const extraEl = document.getElementById("extra");
+    const resultEl = document.getElementById("result");
+    const statusEl = document.getElementById("status");
+    const generateBtn = document.getElementById("generateBtn");
+    const demoBtn = document.getElementById("demoBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    function setStatus(text, type = "default") {
+      const className = type === "ok" ? "status ok" : type === "error" ? "status error" : "status";
+      statusEl.className = className;
+      statusEl.innerHTML = `<span class="dot"></span><span>${text}</span>`;
+    }
+
+    function payload() {
+      return {
+        industry: "美業",
+        service: serviceEl.value,
+        audience: audienceEl.value,
+        style: styleEl.value,
+        goal: goalEl.value,
+        platform: platformEl.value,
+        extra: extraEl.value.trim()
+      };
+    }
+
+    function localDraft(data) {
+      return `【開頭】\n很多人不是做了 ${data.service} 不好看，\n而是一開始就根本不適合。\n\n【痛點】\n尤其是 ${data.audience}，最常遇到的問題不是找不到作品，\n而是看了很多範例，卻不知道自己到底撐不撐得起來。\n\n【專業判斷】\n${data.service} 不是只看流行不流行，\n還要看臉型、整體風格、整理習慣，甚至你平常有沒有時間維持。\n如果只是跟風，做完後悔的機率其實很高。\n\n【語氣方向】\n這次建議用「${data.style}」的方式去寫，重點放在「${data.goal}」。\n\n【行動引導】\n如果你最近也在考慮做 ${data.service}，\n但不確定自己到底適不適合，\n可以先私訊我，我幫你看方向，再決定要不要做。\n\n【平台建議】\n這篇適合先發在 ${data.platform}。${data.extra ? `\n\n【補充資訊】\n${data.extra}` : ""}`;
+    }
+
+    async function generateContent() {
+      const data = payload();
+      setStatus("生成中...", "default");
+      generateBtn.disabled = true;
+
+      try {
+        if (!API_ENDPOINT) {
+          await new Promise(resolve => setTimeout(resolve, 650));
+          resultEl.textContent = localDraft(data);
+          setStatus("已生成（目前為前端示範模式）。", "ok");
+          return;
+        }
+
+        const response = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error(`API 回應失敗：${response.status}`);
+        }
+
+        const json = await response.json();
+        resultEl.textContent = json.result || "後端有回應，但沒有 result 欄位。";
+        setStatus("已生成。", "ok");
+      } catch (error) {
+        resultEl.textContent = `錯誤訊息：${error.message}`;
+        setStatus("生成失敗，請檢查 API 或網路設定。", "error");
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
+    function loadDemo() {
+      serviceEl.value = "黑人燙";
+      audienceEl.value = "男生";
+      styleEl.value = "打臉式開頭";
+      goalEl.value = "讓人私訊詢問";
+      platformEl.value = "Instagram";
+      extraEl.value = "店在內湖，目前主打有型但好整理的風格，希望多一點私訊引導與新客預約感。";
+      setStatus("已載入示範資料。", "ok");
+    }
+
+    function clearForm() {
+      serviceEl.selectedIndex = 0;
+      audienceEl.selectedIndex = 0;
+      styleEl.selectedIndex = 0;
+      goalEl.selectedIndex = 0;
+      platformEl.selectedIndex = 0;
+      extraEl.value = "";
+      resultEl.textContent = "按下「生成成交貼文」後，這裡會出現結果。";
+      setStatus("已清空。", "default");
+    }
+
+    async function copyResult() {
+      try {
+        await navigator.clipboard.writeText(resultEl.textContent);
+        setStatus("結果已複製。", "ok");
+      } catch {
+        setStatus("複製失敗，請手動複製。", "error");
+      }
+    }
+
+    generateBtn.addEventListener("click", generateContent);
+    demoBtn.addEventListener("click", loadDemo);
+    clearBtn.addEventListener("click", clearForm);
+    copyBtn.addEventListener("click", copyResult);
+  </script>
 </body>
 </html>
