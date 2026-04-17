@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>美業成交文案生成器 v1</title>
+</head>
+<body>
+<h1>美業成交文案生成器 v1</h1>
+<p>（簡化版，完整樣式請使用我剛剛給你的版本）</p>
+
+<label>服務項目：</label>
+<select id="service">
+<option>男士剪髮</option>
+<option>染髮</option>
+<option>燙髮</option>
+<option>黑人燙</option>
+</select>
+
+<br><br>
+
+<label>客群：</label>
+<select id="audience">
+<option>男生</option>
+<option>女生</option>
+<option>學生</option>
+<option>上班族</option>
+</select>
+
+<br><br>
+
+<button onclick="generate()">生成貼文</button>
+
+<pre id="result"></pre>
+
+<script>
+function generate(){
+  const service = document.getElementById("service").value;
+  const audience = document.getElementById("audience").value;
+
+  document.getElementById("result").innerText =
+`很多${audience}做${service}都踩雷，
+不是不好看，是根本不適合。
+
+如果你也在考慮，
+可以先私訊我幫你看適不適合。`;
+}
+</script>
+
+</body>
+</html>
